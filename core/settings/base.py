@@ -1,5 +1,6 @@
 from pathlib import Path
 import environ
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -70,6 +71,37 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
+#REST Framework configuration
+
+REST_FRAMEWORK={
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+}
+
+# JWT Configuration
+from datetime import timedelta
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    
+    'AUTH_HEADER_TYPES': ('Bearer',),
+}
+# CORS Configuration
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:3000',  # React frontend
+]
+
+INSTALLED_APPS += [
+    'corsheaders',
+    'rest_framework_simplejwt',
+]
+MIDDLEWARE.insert(0, 'corsheaders.middleware.CorsMiddleware')
+
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
