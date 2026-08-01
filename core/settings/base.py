@@ -116,7 +116,6 @@ CACHES = {
         'LOCATION': env('REDIS_URL', default='redis://127.0.0.1:6379/1'),
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-            'CONNECTION_POOL_KWARGS': {'protocol': 2},
         }
     }
 }
@@ -138,5 +137,26 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Default primary key field type
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CELERY_BROKER_URL = env(
+    'REDIS_URL',
+    default='redis://127.0.0.1:6379/0'
+)
+CELERY_RESULT_BACKEND = env(
+    'REDIS_URL',
+    default='redis://127.0.0.1:6379/0'
+)
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'Asia/Kolkata'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = env(
+    'DEFAULT_FROM_EMAIL',
+    default='noreply@jobhunt.com'
+)
+
+INSTALLED_APPS += ['django_celery_beat']
