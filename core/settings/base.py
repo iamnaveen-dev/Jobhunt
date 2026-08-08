@@ -160,3 +160,14 @@ DEFAULT_FROM_EMAIL = env(
 )
 
 INSTALLED_APPS += ['django_celery_beat']
+ASGI_APPLICATION = 'core.asgi.application'
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [('127.0.0.1', 6379)],
+        },
+    },
+}
+
+INSTALLED_APPS += ['daphne', 'channels']

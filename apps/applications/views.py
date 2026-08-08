@@ -17,6 +17,7 @@ from .tasks import (
 )
 from apps.accounts.permissions import IsJobSeeker, IsRecruiter
 from apps.notifications.models import Notification
+from apps.notifications.utils import send_notification_to_user
 
 
 @api_view(['POST'])
@@ -54,12 +55,12 @@ def apply_view(request):
             job_title=application.job.title
         )
 
-        Notification.objects.create(
+        send_notification_to_user(
             recipient=application.job.recruiter,
             notif_type='new_applicant',
             title=f'New applicant for {application.job.title}',
             message=f'{request.user.username} has applied for your job.'
-        )
+)
 
         return Response({
             'message': 'Application submitted successfully.',
@@ -191,12 +192,12 @@ def update_application_status_view(request, pk):
             company_name=application.job.recruiter.recruiter_profile.company_name
         )
 
-        Notification.objects.create(
-            recipient=application.applicant,
-            notif_type='application_update',
-            title=f'Application Update — {application.job.title}',
-            message=f'Your application status changed to {application.status.upper()}.'
-        )
+        send_notification_to_user(
+        recipient=application.applicant,
+        notif_type='application_update',
+        title=f'Application Update — {application.job.title}',
+        message=f'Your application status changed to {application.status.upper()}.'
+)
 
         return Response({
             'message': 'Application status updated.',
