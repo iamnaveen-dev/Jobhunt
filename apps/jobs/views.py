@@ -12,6 +12,7 @@ from .serializers import (
     JobDetailSerializer,
     JobCreateUpdateSerializer,
     SkillSerializer,
+    
 )
 from apps.accounts.permissions import IsRecruiter
 
@@ -249,3 +250,38 @@ def skill_list_view(request):
         'total': skills.count(),
         'skills': serializer.data
     })
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def semantic_search_view(request):
+    query = request.query_params.get('q', '')
+
+    if not query or len(query) < 3:
+        return Response(
+            {'error': 'Please provide a search query of at least 3 characters.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+    try:
+        from apps.ai_engine.semantic_search import semantic_job_search
+        jobs, scores = semantic_job_search(query, limit=10)
+
+        serializer = JobListSerializer(jobs, many=True)
+        data = serializer.data
+
+        for job_data in data:
+            job_data['semantic_score'] = scores.get(
+                job_data['id'], 0
+            )
+
+        return Response({
+            'query': query,
+            'total': len(jobs),
+            'results': data
+        })
+
+    except Exception as e:
+        return Response(
+            {'error': 'Semantic search failed. Try keyword search instead.'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )

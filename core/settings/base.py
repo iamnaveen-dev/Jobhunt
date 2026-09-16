@@ -14,6 +14,7 @@ SECRET_KEY = env('SECRET_KEY')
 
 # Application definition
 INSTALLED_APPS = [
+    'daphne',                    
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -22,6 +23,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Third party
     'rest_framework',
+    'corsheaders',
+    'rest_framework_simplejwt',
+    'django_filters',
+    'channels',
+    'django_celery_beat',
     # Our apps
     'apps.accounts',
     'apps.jobs',
@@ -96,13 +102,10 @@ CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',  # React frontend
 ]
 
-INSTALLED_APPS += [
-    'corsheaders',
-    'rest_framework_simplejwt',
-]
+
 MIDDLEWARE.insert(0, 'corsheaders.middleware.CorsMiddleware')
 
-INSTALLED_APPS += ['django_filters']
+
 
 REST_FRAMEWORK['DEFAULT_FILTER_BACKENDS'] = [
     'django_filters.rest_framework.DjangoFilterBackend',
@@ -159,7 +162,7 @@ DEFAULT_FROM_EMAIL = env(
     default='noreply@jobhunt.com'
 )
 
-INSTALLED_APPS += ['django_celery_beat']
+
 ASGI_APPLICATION = 'core.asgi.application'
 CHANNEL_LAYERS = {
     'default': {
@@ -170,4 +173,5 @@ CHANNEL_LAYERS = {
     },
 }
 
-INSTALLED_APPS += ['daphne', 'channels']
+
+GEMINI_API_KEY = env('GEMINI_API_KEY', default='')

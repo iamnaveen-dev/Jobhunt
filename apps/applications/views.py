@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from .models import Application, ApplicationTimeline, SavedJob
+
 from .serializers import (
     ApplicationCreateSerializer,
     ApplicationListSerializer,
@@ -40,6 +41,8 @@ def apply_view(request):
             changed_by=request.user,
             note='Application submitted.'
         )
+        from apps.ai_engine.tasks import calculate_match_score_task
+        calculate_match_score_task.delay(application.id)
 
         send_application_received_email.delay(
             applicant_email=request.user.email,

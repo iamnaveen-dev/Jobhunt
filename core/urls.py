@@ -9,6 +9,8 @@ urlpatterns = [
     path('api/', include('apps.jobs.urls')),
     path('api/', include('apps.applications.urls')),
     path('api/', include('apps.notifications.urls')),
+    path('api/', include('apps.ai_engine.urls')),
+    path('api/', include('apps.analytics.urls')),
 
 
 
