@@ -8,3 +8,5 @@ media/
 staticfiles/
 .DS_Store
 db.sqlite3
+.env
+.env.production
